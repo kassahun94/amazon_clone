@@ -33,7 +33,6 @@ function Header() {
 					</div>
 				</div>
 				{/* Right section */}
-
 				<div className="text-white flex items-center text-xs space-x-6 mx-6 whitespace-nowrap">
 					<Link to="/auth">
 						<div className="link">
@@ -47,17 +46,17 @@ function Header() {
 							<p className="font-extrabold md:text-sm">& Orders</p>
 						</div>
 					</Link>
-					<div className="relative flex items-center link">
-						<span className="absolute top-0 right-0 md:right-10 h-4 w-4 bg-yellow-400 text-center rounded-full text-black font-bold">
-							0
-						</span>
-						<Link to="/cart">
+					<Link to="/cart">
+						<div className="relative flex items-center link">
+							<span className="absolute top-2 left-1/3 transform -translate-x-1/2 -translate-y-1/2 h-4 w-4 bg-yellow-400 text-center rounded-full text-black font-bold">
+								0
+							</span>
 							<HiOutlineShoppingCart className="h-10 w-10" />
 							<p className="hidden md:inline font-extrabold md:text-sm mt-2">
 								Cart
 							</p>
-						</Link>
-					</div>
+						</div>
+					</Link>
 				</div>
 			</div>
 			{/* Bottom navigation */}

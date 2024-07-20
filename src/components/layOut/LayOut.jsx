@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-// src/components/layOut/LayOut.jsx
+
 
 import Header from '../header/Header';
 
