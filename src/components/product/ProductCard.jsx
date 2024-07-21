@@ -22,7 +22,7 @@ function ProductCard({ product }) {
 				{category}
 			</p>
 			<div className="relative flex-grow flex items-center justify-center mb-4">
-				<Link to={`/product/${id}`}>
+				<Link to={`/products/${id}`}>
 					<img
 						src={image}
 						alt={title}

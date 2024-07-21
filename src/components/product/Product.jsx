@@ -30,7 +30,7 @@ function Product() {
 				<div className="grid grid-flow-row-dense md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:mt-6">
 					{products.slice(0, 4).map((product) => (
 						<div key={product.id}>
-							<Link to={`/product/${product.id}`}>
+							<Link to={`/products/${product.id}`}>
 								<ProductCard product={product} />
 							</Link>
 						</div>
@@ -48,7 +48,7 @@ function Product() {
 
 					{products.slice(4, 5).map((product) => (
 						<div key={product.id} className="md:col-span-2">
-							<Link to={`/product/${product.id}`}>
+							<Link to={`/products/${product.id}`}>
 								<ProductCard product={product} />
 							</Link>
 						</div>
@@ -56,7 +56,7 @@ function Product() {
 
 					{products.slice(5).map((product) => (
 						<div key={product.id}>
-							<Link to={`/product/${product.id}`}>
+							<Link to={`/products/${product.id}`}>
 								<ProductCard product={product} />
 							</Link>
 						</div>
