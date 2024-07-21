@@ -1,32 +1,38 @@
-// ProductDetail.jsx
+
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { productUrl } from "../../Api/endpoint"
+import ProductCard from "../../components/product/ProductCard";
+import LayOut from "../../components/layOut/LayOut";
+import Loader from "../../components/loader/Loader";
 
 function ProductDetail() {
-	const { id } = useParams();
-	const [product, setProduct] = useState(null);
+	const [productId] = useParams();
+	const [isLoading, setLoading] = useState(false);
+	const [product, setProduct] = useState({});
 
 	useEffect(() => {
+		setLoading(true);
 		axios
-			.get(`https://fakestoreapi.com/products/${id}`)
+			.get(`${productUrl}/products${productId}`)
 			.then((res) => {
 				setProduct(res.data);
+				setLoading(false);
 			})
 			.catch((error) => {
 				console.error("Error fetching product:", error);
+				setLoading(false);
 			});
-	}, [id]);
+	}, [productId]);
 
 	if (!product) return <p>Loading...</p>;
-
+	
 	return (
-		<div>
-			<h1>{product.title}</h1>
-			<p>{product.description}</p>
-			<img src={product.image} alt={product.title} />
-			<p>Price: ${product.price}</p>
-		</div>
+		<LayOut>
+			{isLoading ? <Loader /> : ( < ProductCard product={product} /> )}
+			
+		</LayOut>
 	);
 }
 

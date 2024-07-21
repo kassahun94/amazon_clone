@@ -1,13 +1,11 @@
 import PropTypes from "prop-types";
 import Rating from "@mui/material/Rating";
 import { IntlProvider, FormattedMessage, FormattedNumber } from "react-intl";
-import { Link } from "react-router-dom"; // Correctly import Link from react-router-dom
+import { Link } from "react-router-dom";
+import { useState } from "react";
 
 function ProductCard({ product }) {
-	if (!product) {
-		return null;
-	}
-
+	const [hasPrime] = useState(Math.random() < 0.5);
 	const {
 		id,
 		title,
@@ -16,7 +14,6 @@ function ProductCard({ product }) {
 		description,
 		image,
 		rating = { rate: 0, count: 0 },
-		hasPrime = false,
 	} = product;
 
 	return (
@@ -25,7 +22,7 @@ function ProductCard({ product }) {
 				{category}
 			</p>
 			<div className="relative flex-grow flex items-center justify-center mb-4">
-				<Link to={`/product/${id}`} passHref>
+				<Link to={`/product/${id}`}>
 					<img
 						src={image}
 						alt={title}
