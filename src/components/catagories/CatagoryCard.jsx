@@ -9,27 +9,28 @@ function CatagoryCard({ data }) {
 	}
 
 	return (
-		<div className="relative flex flex-col justify-between bg-white p-4 md:p-6 m-5 h-full shadow-md rounded-lg">
-			<Link
-				to={`/categories/${encodeURIComponent(data.name)}`}
-				className="flex flex-col h-full"
-			>
-				<div className="flex flex-col flex-grow justify-between">
-					<span>
-						<h2 className="text-lg font-semibold mb-2 text-center">
-							{data.title}
-						</h2>
-					</span>
+		<div className="relative flex flex-col justify-between bg-white p-4 md:p-6 m-5 shadow-md rounded-lg">
+			<div className="flex-grow flex flex-col justify-between">
+				<h2 className="text-lg font-semibold mb-2 text-center">{data.title}</h2>
+				<Link
+					to={`/categories/${encodeURIComponent(data.name)}`}
+					className="block w-full text-center mb-2"
+				>
 					<img
 						src={data.imgLink}
 						alt={data.title ? `${data.title} Category Image` : "Category Image"}
-						className="w-full h-48 object-cover mb-2 rounded-lg"
+						className="w-full h-56 object-contain mx-auto rounded-lg"
 					/>
-				</div>
-				<div className="flex justify-center items-center py-2">
-					<p className="text-blue-500 font-semibold">Shop Now</p>
-				</div>
-			</Link>
+				</Link>
+			</div>
+			<div className="flex justify-center items-center py-2">
+				<Link
+					to={`/categories/${encodeURIComponent(data.name)}`}
+					className="text-blue-500 font-semibold"
+				>
+					Shop Now
+				</Link>
+			</div>
 		</div>
 	);
 }

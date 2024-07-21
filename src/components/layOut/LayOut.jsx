@@ -1,21 +1,17 @@
-import PropTypes from 'prop-types';
-
-
-import Header from '../header/Header';
+import PropTypes from "prop-types";
+import Header from "../header/Header";
 
 function LayOut({ children }) {
-  return (
-    <div>
-      <Header />
-      {children}
-    </div>
-  );
+	return (
+		<div>
+			<Header />
+			<main className="pt-16">{children}</main>
+		</div>
+	);
 }
-
-export default LayOut;
 
 LayOut.propTypes = {
 	children: PropTypes.node.isRequired,
 };
 
-
+export default LayOut;

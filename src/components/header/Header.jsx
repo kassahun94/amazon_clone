@@ -1,12 +1,14 @@
-"use client";
-
+import { useContext } from "react";
 import { HiOutlineShoppingCart } from "react-icons/hi2";
 import { FiSearch, FiMenu } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import { DataContext } from "../../components/DataProvider/DataProvider";
 
 function Header() {
+	const [{ cart }] = useContext(DataContext);
+
 	return (
-		<section className="relative z-50">
+		<section className="sticky top-0 left-0 right-0 z-50 bg-amazon_blue p-2 flex flex-col">
 			{/* Top navigation */}
 			<div className="flex items-center bg-amazon_blue p-2 flex-grow py-2">
 				<div className="mt-2 flex items-center flex-grow sm:flex-grow-0">
@@ -49,7 +51,7 @@ function Header() {
 					<Link to="/cart">
 						<div className="relative flex items-center link">
 							<span className="absolute top-2 left-1/3 transform -translate-x-1/2 -translate-y-1/2 h-4 w-4 bg-yellow-400 text-center rounded-full text-black font-bold">
-								0
+								{cart.length}
 							</span>
 							<HiOutlineShoppingCart className="h-10 w-10" />
 							<p className="hidden md:inline font-extrabold md:text-sm mt-2">
@@ -60,8 +62,8 @@ function Header() {
 				</div>
 			</div>
 			{/* Bottom navigation */}
-			<div>
-				<div className="flex items-center space-x-3 p-2 pl-6 bg-amazon_blue-light text-white text-sm">
+			<div className="bg-amazon_blue-light text-white text-sm">
+				<div className="flex items-center space-x-3 p-2 pl-6">
 					<p className="link flex items-center">
 						<FiMenu className="h-6 mr-1" />
 						All
