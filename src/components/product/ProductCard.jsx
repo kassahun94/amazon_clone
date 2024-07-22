@@ -1,11 +1,12 @@
 import PropTypes from "prop-types";
-import { useContext } from "react";
-import { DataContext } from "../DataProvider/DataProvider";
+import { useContext, useState } from "react"; 
+import { DataContext } from "../../components/DataProvider/DataProvider";
 import Rating from "@mui/material/Rating";
 import { Link } from "react-router-dom";
 
 function ProductCard({ product, renderAdd }) {
 	const [, dispatch] = useContext(DataContext);
+	const [hasPrime] = useState(Math.random() < 0.5);
 
 	const {
 		id,
@@ -57,9 +58,23 @@ function ProductCard({ product, renderAdd }) {
 						${price.toFixed(2)}
 					</p>
 				</div>
+
+				{hasPrime && (
+					<div className="flex items-center justify-center space-x-2 -mt-4">
+						<img
+							loading="lazy"
+							src="/prime.png"
+							alt="Prime"
+							className="w-12"
+							style={{ height: "48px", width: "auto" }}
+						/>
+						<p className="text-xs text-gray-500">FREE Next-day Delivery</p>
+					</div>
+				)}
+
 				{renderAdd && (
 					<button
-						className="py-2 px-4 w-4/5 bg-blue-500 text-white rounded-md text-center mx-auto cursor-pointer"
+						className="p-2 text-xs md:text-sm bg-gradient-to-b from-yellow-200 to-yellow-500 text-black font-bold py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-yellow-500 active:from-yellow-600 focus:ring-opacity-50 transition duration-300 ease-in-out w-60 hover:bg-gradient-to-b hover:from-yellow-500 hover:to-yellow-600"
 						onClick={addToCart}
 					>
 						Add to Cart

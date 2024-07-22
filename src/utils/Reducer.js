@@ -1,4 +1,4 @@
-import { Type } from "./../utils/ActionType";
+import { Type } from "./ActionType"; // Assuming ActionType.js or ActionType.jsx contains action types
 
 export const initialState = {
 	cart: [],

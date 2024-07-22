@@ -7,7 +7,7 @@ import Loader from "../loader/Loader";
 function Product() {
 	const [products, setProducts] = useState([]);
 	const [isLoading, setLoading] = useState(false);
-
+	
 	useEffect(() => {
 		setLoading(true);
 		axios

@@ -11,9 +11,9 @@ function Cart() {
 		const newGroupedCart = cart.reduce((acc, item) => {
 			const existingItemIndex = acc.findIndex((i) => i.id === item.id);
 			if (existingItemIndex !== -1) {
-				acc[existingItemIndex].amount += 1;
+				acc[existingItemIndex].amount += item.amount;
 			} else {
-				acc.push({ ...item, amount: 1 });
+				acc.push({ ...item });
 			}
 			return acc;
 		}, []);
@@ -45,7 +45,15 @@ function Cart() {
 	const subtotal = groupedCart
 		.reduce((acc, item) => acc + item.price * item.amount, 0)
 		.toFixed(2);
+
 	const totalItems = groupedCart.reduce((acc, item) => acc + item.amount, 0);
+
+	// Calculate delivery fee
+	const hasPrimeItem = groupedCart.some((item) => item.prime);
+	const deliveryFee = hasPrimeItem ? 0 : 6.99;
+
+	// Calculate total with delivery fee
+	const totalWithDelivery = (parseFloat(subtotal) + deliveryFee).toFixed(2);
 
 	return (
 		<LayOut>
@@ -68,14 +76,24 @@ function Cart() {
 										alt={item.title}
 										className="w-24 h-24 object-contain"
 									/>
-									<div className="flex flex-col">
+									<div className="flex flex-col flex-grow">
 										<h3 className="font-bold text-lg">{item.title}</h3>
 										<p className="italic text-gray-600">{item.description}</p>
-										<p className="text-lg font-semibold">
-											${item.price.toFixed(2)} x {item.amount}
-										</p>
+										{item.prime && (
+											<div className="flex items-center">
+												<img
+													loading="lazy"
+													src="/prime.png"
+													alt="Prime"
+													className="w-12"
+													style={{ height: "48px", width: "48px" }}
+												/>
+												<p className="text-sm text-green-500 ml-2">
+													Free Delivery
+												</p>
+											</div>
+										)}
 									</div>
-									{/* Add item or remove item */}
 									<div className="flex items-center gap-2">
 										<button
 											onClick={() => incrementItem(item.id)}
@@ -156,11 +174,11 @@ function Cart() {
 							</div>
 							<div className="flex justify-between">
 								<p>Shipping</p>
-								<p>Free</p>
+								<p>${deliveryFee === 0 ? "Free" : deliveryFee.toFixed(2)}</p>
 							</div>
 							<div className="flex justify-between">
 								<p>Total</p>
-								<p>${subtotal}</p>
+								<p>${totalWithDelivery}</p>
 							</div>
 						</div>
 					</div>

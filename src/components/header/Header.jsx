@@ -6,6 +6,8 @@ import { DataContext } from "../../components/DataProvider/DataProvider";
 
 function Header() {
 	const [{ cart }] = useContext(DataContext);
+	const totalItems = cart?.reduce((acc, item) => acc + item.amount, 0);
+
 
 	return (
 		<section className="sticky top-0 left-0 right-0 z-50 bg-amazon_blue p-2 flex flex-col">
@@ -51,7 +53,7 @@ function Header() {
 					<Link to="/cart">
 						<div className="relative flex items-center link">
 							<span className="absolute top-2 left-1/3 transform -translate-x-1/2 -translate-y-1/2 h-4 w-4 bg-yellow-400 text-center rounded-full text-black font-bold">
-								{cart.length}
+								{totalItems}
 							</span>
 							<HiOutlineShoppingCart className="h-10 w-10" />
 							<p className="hidden md:inline font-extrabold md:text-sm mt-2">

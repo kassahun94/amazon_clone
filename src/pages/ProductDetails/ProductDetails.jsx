@@ -59,7 +59,7 @@ function ProductDetails() {
 									</p>
 								</div>
 							)}
-							<button className="py-2 px-4 w-full bg-blue-500 text-white rounded-md text-center">
+							<button className="cursor-pointer hover:border-[1px] rounded-[3px] p-2 text-xs md:text-sm bg-gradient-to-b from-yellow-200 to-yellow-500 font-bold py-2 border-yellow-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 active:from-yellow-600 focus:ring-opacity-50 transition duration-300 ease-in-out w-60 hover:bg-gradient-to-b hover:from-yellow-500 hover:to-yellow-600">
 								Add to Cart
 							</button>
 						</div>
