@@ -31,7 +31,7 @@ function Product() {
 					{products.slice(0, 4).map((product) => (
 						<div key={product.id}>
 							<Link to={`/products/${product.id}`}>
-								<ProductCard product={product} />
+								<ProductCard product={product} renderAdd={true} />
 							</Link>
 						</div>
 					))}
@@ -49,7 +49,7 @@ function Product() {
 					{products.slice(4, 5).map((product) => (
 						<div key={product.id} className="md:col-span-2">
 							<Link to={`/products/${product.id}`}>
-								<ProductCard product={product} />
+								<ProductCard product={product} renderAdd={true} />
 							</Link>
 						</div>
 					))}
@@ -57,7 +57,7 @@ function Product() {
 					{products.slice(5).map((product) => (
 						<div key={product.id}>
 							<Link to={`/products/${product.id}`}>
-								<ProductCard product={product} />
+								<ProductCard product={product} renderAdd={true} />
 							</Link>
 						</div>
 					))}

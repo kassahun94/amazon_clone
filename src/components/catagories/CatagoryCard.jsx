@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 function CatagoryCard({ data }) {
-	console.log("Category Data:", data);
 
 	if (!data) {
 		return <div className="text-center">No category data available</div>;
