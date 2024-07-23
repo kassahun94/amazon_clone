@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useContext, useState } from "react"; 
+import { useContext, useState } from "react";
 import { DataContext } from "../../components/DataProvider/DataProvider";
 import Rating from "@mui/material/Rating";
 import { Link } from "react-router-dom";
@@ -20,9 +20,10 @@ function ProductCard({ product, renderAdd }) {
 	const addToCart = (event) => {
 		event.stopPropagation();
 		event.preventDefault();
+		console.log("Product in addToCart:", product); // Debugging
 		dispatch({
 			type: "ADD_TO_CART",
-			item: product,
+			item: product, // Ensure this is correctly passed
 		});
 	};
 

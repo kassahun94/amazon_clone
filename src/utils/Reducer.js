@@ -1,55 +1,38 @@
-import { Type } from "./ActionType"; // Assuming ActionType.js or ActionType.jsx contains action types
+import { Type } from "../utils/ActionType";
 
-export const initialState = {
-	cart: [],
-	// Add other initial state properties here if needed
-};
-
-export const Reducer = (state, action) => {
-	console.log("Reducer action:", action);
+const reducer = (state, action) => {
 	switch (action.type) {
-		case Type.ADD_TO_CART: {
-			const existingItemIndex = state.cart.findIndex(
-				(item) => item.id === action.item.id
-			);
-
-			if (existingItemIndex !== -1) {
-				const updatedCart = state.cart.map((item, index) =>
-					index === existingItemIndex
-						? { ...item, amount: item.amount + 1 }
-						: item
-				);
-
-				console.log("Updated cart with increased amount:", updatedCart);
-
-				return {
-					...state,
-					cart: updatedCart,
-				};
-			} else {
-				console.log("Adding new item to cart:", action.item);
-
-				return {
-					...state,
-					cart: [...state.cart, { ...action.item, amount: 1 }],
-				};
-			}
-		}
-
-		case Type.REMOVE_FROM_CART: {
-			const updatedCart = state.cart.filter(
-				(item) => item.id !== action.item.id
-			);
-
-			console.log("Updated cart after removal:", updatedCart);
-
+		case Type.ADD_TO_CART:
 			return {
 				...state,
-				cart: updatedCart,
+				cart: [...state.cart, { ...action.item, amount: 1 }],
 			};
-		}
-
-default:
+		case Type.INCREMENT_ITEM:
+			return {
+				...state,
+				cart: state.cart.map((item) =>
+					item.id === action.payload
+						? { ...item, amount: item.amount + 1 }
+						: item
+				),
+			};
+		case Type.DECREMENT_ITEM:
+			return {
+				...state,
+				cart: state.cart.map((item) =>
+					item.id === action.payload
+						? { ...item, amount: Math.max(item.amount - 1, 1) }
+						: item
+				),
+			};
+		case Type.REMOVE_ITEM:
+			return {
+				...state,
+				cart: state.cart.filter((item) => item.id !== action.payload),
+			};
+		default:
 			return state;
 	}
 };
+
+export default reducer;

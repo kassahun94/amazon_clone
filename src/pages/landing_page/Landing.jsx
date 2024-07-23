@@ -1,5 +1,3 @@
-// src/pages/landing_page/Landing.jsx
-
 import Banner from "../../components/banner/Banner";
 import Catagories from "../../components/catagories/Catagories";
 import Product from "../../components/product/Product";

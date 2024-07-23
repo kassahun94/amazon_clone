@@ -1,20 +1,28 @@
-import { createContext, useReducer } from "react";
+import  { createContext, useReducer } from "react";
 import PropTypes from "prop-types";
+import reducer from "../../utils/Reducer";
 
+const initialState = {
+	cart: [],
+};
+
+// Create context
 export const DataContext = createContext();
 
-const DataProvider = ({ children, reducer, initialState }) => {
+// Define provider component
+const DataProvider = ({ children }) => {
+	const [state, dispatch] = useReducer(reducer, initialState);
+
 	return (
-		<DataContext.Provider value={useReducer(reducer, initialState)}>
+		<DataContext.Provider value={[state, dispatch]}>
 			{children}
 		</DataContext.Provider>
 	);
 };
 
+// Validate children prop
 DataProvider.propTypes = {
 	children: PropTypes.node.isRequired,
-	reducer: PropTypes.func.isRequired,
-	initialState: PropTypes.object.isRequired,
 };
 
 export default DataProvider;

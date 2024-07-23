@@ -1,72 +1,51 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { DataContext } from "../../components/DataProvider/DataProvider";
 import { Link } from "react-router-dom";
 import LayOut from "../../components/layOut/LayOut";
 
 function Cart() {
-	const [{ cart }] = useContext(DataContext);
-	const [groupedCart, setGroupedCart] = useState([]);
+	const [{ cart }, dispatch] = useContext(DataContext);
 
 	useEffect(() => {
-		const newGroupedCart = cart.reduce((acc, item) => {
-			const existingItemIndex = acc.findIndex((i) => i.id === item.id);
-			if (existingItemIndex !== -1) {
-				acc[existingItemIndex].amount += item.amount;
-			} else {
-				acc.push({ ...item });
-			}
-			return acc;
-		}, []);
-		setGroupedCart(newGroupedCart);
 	}, [cart]);
 
 	const incrementItem = (id) => {
-		setGroupedCart((prevCart) =>
-			prevCart.map((item) =>
-				item.id === id ? { ...item, amount: item.amount + 1 } : item
-			)
-		);
+		dispatch({ type: "INCREMENT_ITEM", payload: id });
 	};
 
 	const decrementItem = (id) => {
-		setGroupedCart((prevCart) =>
-			prevCart
-				.map((item) =>
-					item.id === id ? { ...item, amount: item.amount - 1 } : item
-				)
-				.filter((item) => item.amount > 0)
-		);
+		dispatch({ type: "DECREMENT_ITEM", payload: id });
 	};
 
 	const removeItem = (id) => {
-		setGroupedCart((prevCart) => prevCart.filter((item) => item.id !== id));
+		dispatch({ type: "REMOVE_ITEM", payload: id });
 	};
 
-	const subtotal = groupedCart
+	const subtotal = cart
 		.reduce((acc, item) => acc + item.price * item.amount, 0)
 		.toFixed(2);
 
-	const totalItems = groupedCart.reduce((acc, item) => acc + item.amount, 0);
+	const totalItems = cart.reduce((acc, item) => acc + item.amount, 0);
 
 	// Calculate delivery fee
-	const hasPrimeItem = groupedCart.some((item) => item.prime);
+	const hasPrimeItem = cart.some((item) => item.prime);
 	const deliveryFee = hasPrimeItem ? 0 : 6.99;
 
-	// Calculate total with delivery fee
+
 	const totalWithDelivery = (parseFloat(subtotal) + deliveryFee).toFixed(2);
 
 	return (
 		<LayOut>
-			<section className="flex flex-col md:flex-row gap-5  w-full mx-auto max-w-full">
+			<section className="flex flex-col md:flex-row gap-5 w-full mx-auto max-w-full">
 				{/* Cart Items Display */}
 				<div className="flex-grow p-5 w-full md:max-w-[70%] mx-auto">
 					<h2 className="py-5 text-xl italic font-bold">Hello</h2>
 					<h3 className="py-5 italic underline text-lg">Your Cart</h3>
 					<div>
-						{groupedCart.length === 0 ? (
+						{cart.length === 0 ? (
 							<p className="text-center text-gray-500">Cart is empty</p>
 						) : (
-							groupedCart.map((item) => (
+							cart.map((item) => (
 								<div
 									key={item.id}
 									className="flex items-center gap-5 p-5 border-b border-gray-200"
@@ -148,7 +127,7 @@ function Cart() {
 				</div>
 				{/* Subtotal and Checkout */}
 				<div className="w-full md:w-auto md:max-w-[30%] md:sticky md:top-5 p-5 border border-gray-300 bg-gray-100 rounded-md">
-					{groupedCart.length > 0 && (
+					{cart.length > 0 && (
 						<div className="flex flex-col items-center gap-5">
 							<div className="text-center w-full">
 								<p className="text-lg font-semibold">
