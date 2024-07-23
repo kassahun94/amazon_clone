@@ -57,11 +57,11 @@ function Cart() {
 
 	return (
 		<LayOut>
-			<section className="flex flex-col md:flex-row gap-5 mt-5 w-full mx-auto max-w-full">
+			<section className="flex flex-col md:flex-row gap-5  w-full mx-auto max-w-full">
 				{/* Cart Items Display */}
 				<div className="flex-grow p-5 w-full md:max-w-[70%] mx-auto">
-					<h2 className="py-5 text-xl font-bold">Cart</h2>
-					<h3 className="py-5 text-lg">Your Cart</h3>
+					<h2 className="py-5 text-xl italic font-bold">Hello</h2>
+					<h3 className="py-5 italic underline text-lg">Your Cart</h3>
 					<div>
 						{groupedCart.length === 0 ? (
 							<p className="text-center text-gray-500">Cart is empty</p>
@@ -97,7 +97,7 @@ function Cart() {
 									<div className="flex items-center gap-2">
 										<button
 											onClick={() => incrementItem(item.id)}
-											className="p-2 bg-gray-200 rounded hover:bg-gray-300"
+											className="p-2 bg-gray-200 rounded hover:bg-yellow-500"
 										>
 											<svg
 												xmlns="http://www.w3.org/2000/svg"
@@ -117,7 +117,7 @@ function Cart() {
 										<p>{item.amount}</p>
 										<button
 											onClick={() => decrementItem(item.id)}
-											className="p-2 bg-gray-200 rounded hover:bg-gray-300"
+											className="p-2 bg-gray-200 rounded hover:bg-yellow-500"
 										>
 											<svg
 												xmlns="http://www.w3.org/2000/svg"
@@ -147,25 +147,27 @@ function Cart() {
 					</div>
 				</div>
 				{/* Subtotal and Checkout */}
-				<section>
+				<div className="w-full md:w-auto md:max-w-[30%] md:sticky md:top-5 p-5 border border-gray-300 bg-gray-100 rounded-md">
 					{groupedCart.length > 0 && (
-						<div className="p-5 w-full md:w-auto flex flex-col items-center gap-5 border border-gray-300 bg-gray-100 rounded-md sticky top-5 md:top-10 md:self-start">
-							<div className="text-center">
+						<div className="flex flex-col items-center gap-5">
+							<div className="text-center w-full">
 								<p className="text-lg font-semibold">
 									Subtotal ({totalItems} {totalItems > 1 ? "items" : "item"})
 								</p>
 								<p className="text-xl font-bold">${subtotal}</p>
 							</div>
-							<Link
-								to="/payments"
-								className="text-center w-full bg-yellow-500 rounded-md py-2 px-4 text-black font-semibold hover:bg-yellow-400"
-							>
-								Continue to Checkout
-							</Link>
+							<div className="mt-5 w-full">
+								<Link
+									to="/payments"
+									className="block w-full bg-yellow-500 rounded-md py-2 px-4 text-black font-semibold text-center hover:bg-yellow-400"
+								>
+									Continue to Checkout
+								</Link>
+							</div>
 						</div>
 					)}
 					{/* Cart Summary */}
-					<div>
+					<div className="mt-5">
 						<h3 className="py-5 text-lg">Cart Summary</h3>
 						<div className="flex flex-col gap-5 p-5 border border-gray-300 bg-gray-100 rounded-md">
 							<div className="flex justify-between">
@@ -182,7 +184,7 @@ function Cart() {
 							</div>
 						</div>
 					</div>
-				</section>
+				</div>
 			</section>
 		</LayOut>
 	);

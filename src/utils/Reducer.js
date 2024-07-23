@@ -49,7 +49,7 @@ export const Reducer = (state, action) => {
 			};
 		}
 
-		default:
+default:
 			return state;
 	}
 };
