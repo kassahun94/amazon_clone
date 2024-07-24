@@ -1,5 +1,4 @@
 const functions = require("firebase-functions");
-const { onRequest } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
 const express = require("express");
 const cors = require("cors");
@@ -19,21 +18,21 @@ app.use(cors({ origin: true }));
 app.use(express.json());
 
 app.get("/", (_, res) => {
-	res.status(200).json({ message: "successs!!!" });
+	res.status(200).json({ message: "success!!!" });
 });
 
 app.post("/payments/create", async (req, res) => {
-	const total = req.query.total;
+	const { total } = req.body;
 
-	if (!total || isNaN(total) || total <= 0) {
-		return res.status(403).json({
+	if (typeof total !== "number" || isNaN(total) || total <= 0) {
+		return res.status(400).json({
 			message: "Total must be a valid number greater than 0",
 		});
 	}
 
 	try {
 		const paymentIntent = await stripeInstance.paymentIntents.create({
-			amount: parseInt(total),
+			amount: Math.round(total * 100), // Convert dollars to cents
 			currency: "usd",
 		});
 		res.status(201).json({

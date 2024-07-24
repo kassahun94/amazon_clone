@@ -7,6 +7,11 @@ function Cart() {
 	const [{ cart }, dispatch] = useContext(DataContext);
 
 	useEffect(() => {
+		const ids = cart.map((item) => item.id);
+		const hasDuplicates = ids.length !== new Set(ids).size;
+		if (hasDuplicates) {
+			console.warn("Duplicate IDs detected:", ids);
+		}
 	}, [cart]);
 
 	const incrementItem = (id) => {
@@ -27,10 +32,8 @@ function Cart() {
 
 	const totalItems = cart.reduce((acc, item) => acc + item.amount, 0);
 
-	// Calculate delivery fee
 	const hasPrimeItem = cart.some((item) => item.prime);
 	const deliveryFee = hasPrimeItem ? 0 : 6.99;
-
 
 	const totalWithDelivery = (parseFloat(subtotal) + deliveryFee).toFixed(2);
 
@@ -47,7 +50,7 @@ function Cart() {
 						) : (
 							cart.map((item) => (
 								<div
-									key={item.id}
+									key={`${item.id}-${item.title}`} // Ensure uniqueness
 									className="flex items-center gap-5 p-5 border-b border-gray-200"
 								>
 									<img

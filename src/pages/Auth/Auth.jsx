@@ -1,4 +1,4 @@
-import { Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { auth } from "../../utils/fireBase";
 import { useState, useContext } from "react";
 import {
@@ -19,6 +19,7 @@ function Auth() {
 
 	const [, dispatch] = useContext(DataContext);
 	const navigate = useNavigate();	
+	const navStateData = useLocation();
 
 	const AuthHandler = (e) => {
 		e.preventDefault();
@@ -33,7 +34,11 @@ function Auth() {
 						user: userCredential.user,
 					});   
           setLoading({...loading, signIn: false });
-					navigate ("/");
+
+					// navigate to home page or riderct to the page that user was trying to access
+
+
+					navigate(navStateData?.redirect || "/");
 				})
 				.catch((error) => {
 					if (error.code === "auth/wrong-password") {
@@ -55,7 +60,7 @@ function Auth() {
 						user: userCredential.user,
 					});
           setLoading({...loading, signUp: false });
-					navigate("/");
+					navigate(navStateData?.redirect || "/");
 				})
 				.catch((error) => {
 					if (error.code === "auth/email-already-in-use") {
@@ -87,6 +92,13 @@ function Auth() {
 			<div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
 				<div>
 					<h1 className="text-3xl font-semibold mb-4">Sign In</h1>
+					{
+						navStateData?.state?.msg && (
+							<small className="mb-4 p-2 align-item-center font-weight-bold text-red-700">
+								{navStateData?.state?.msg}
+							</small>
+						)
+					}
 					<form>
 						<div className="mb-4">
 							<label
