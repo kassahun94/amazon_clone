@@ -137,7 +137,7 @@ function Cart() {
 							</div>
 							<div className="mt-5 w-full">
 								<Link
-									to="/payments"
+									to="/payment"
 									className="block w-full bg-yellow-500 rounded-md py-2 px-4 text-black font-semibold text-center hover:bg-yellow-400"
 								>
 									Continue to Checkout
