@@ -3,11 +3,23 @@ import { HiOutlineShoppingCart } from "react-icons/hi2";
 import { FiSearch, FiMenu } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { DataContext } from "../../components/DataProvider/DataProvider";
+import { auth } from "../../utils/fireBase";
 
 function Header() {
-	const [{ cart }] = useContext(DataContext);
+	const [{ user, cart }, dispatch] = useContext(DataContext);
 	const totalItems = cart?.reduce((acc, item) => acc + item.amount, 0);
 
+	const handleSignOut = async () => {
+		try {
+			await auth.signOut();
+			dispatch({
+				type: "SET_USER",
+				user: null,
+			});
+		} catch (error) {
+			console.error("Error signing out: ", error);
+		}
+	};
 
 	return (
 		<section className="sticky top-0 left-0 right-0 z-50 bg-amazon_blue p-2 flex flex-col">
@@ -38,12 +50,21 @@ function Header() {
 				</div>
 				{/* Right section */}
 				<div className="text-white flex items-center text-xs space-x-6 mx-6 whitespace-nowrap">
-					<Link to="/auth">
-						<div className="link">
-							<p>Hello, Sign in</p>
-							<p className="font-extrabold md:text-sm">Account & Lists</p>
+					<div className="link" onClick={user ? handleSignOut : null}>
+						<div>
+							{user ? (
+								<>
+									<p>Hello, {user?.email?.split("@")[0]}</p>
+									<span onClick={handleSignOut}>Sign Out</span>
+								</>
+							) : (
+								<Link to="/auth">
+									<p>Hello, Sign In</p>
+									<p className="font-extrabold md:text-sm">Account & Lists</p>
+								</Link>
+							)}
 						</div>
-					</Link>
+					</div>
 					<Link to="/orders">
 						<div className="link">
 							<p>Returns</p>

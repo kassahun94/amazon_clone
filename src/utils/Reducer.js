@@ -1,6 +1,11 @@
 import { Type } from "../utils/ActionType";
 
-const reducer = (state, action) => {
+const initialState = {
+	cart: [],
+	user: null,
+};
+
+const reducer = (state = initialState, action) => {
 	switch (action.type) {
 		case Type.ADD_TO_CART:
 			return {
@@ -29,6 +34,11 @@ const reducer = (state, action) => {
 			return {
 				...state,
 				cart: state.cart.filter((item) => item.id !== action.payload),
+			};
+		case Type.SET_USER:
+			return {
+				...state,
+				user: action.user,
 			};
 		default:
 			return state;
