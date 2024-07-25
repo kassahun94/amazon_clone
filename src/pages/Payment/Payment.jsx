@@ -14,6 +14,7 @@ function Payment() {
 	const cart = state.cart;
 	const [cardError, setCardError] = useState(null);
 	const [processing, setProcessing] = useState(false);
+	const [paymentSuccess, setPaymentSuccess] = useState(false);
 	const stripe = useStripe();
 	const elements = useElements();
 
@@ -78,14 +79,10 @@ function Payment() {
 					created: paymentIntent.created,
 				});
 
-				// Log cart before dispatch
-				console.log("Cart before dispatch:", state.cart);
-
 				// Dispatch action to clear the cart after successful payment
 				dispatch({ type: Type.CLEAR_CART });
 
-				
-				console.log("Cart after dispatch:", state.cart);
+				setPaymentSuccess(true); // Set payment success state
 
 				setCardError(null);
 			} else {
@@ -106,114 +103,136 @@ function Payment() {
 					<h2 className="text-2xl font-semibold mb-6">
 						Checkout ({totalItems} items)
 					</h2>
-					<div className="flex flex-col lg:flex-row gap-6 mb-6">
-						<div className="flex-1 bg-gray-50 p-6 border rounded-lg shadow-md">
-							<h3 className="text-xl font-semibold mb-4">
-								Review items and shipping
-							</h3>
-							<div className="bg-gray-100 p-4 rounded-lg">
-								<p className="text-sm text-green-700 mb-4">
-									Arriving Jul 29, 2024 if you order in the next 17 hours and 30
-									minutes (Details)
-								</p>
-								{cart.map((item) => (
-									<div key={item.id} className="flex mb-4">
-										<img
-											src={item.image}
-											alt={item.title}
-											className="w-20 h-20 object-cover rounded-lg"
-										/>
-										<div className="ml-4">
-											<p className="font-semibold text-lg">{item.title}</p>
-											<p className="text-gray-600">Sold by: {item.seller}</p>
-											<p className="font-semibold text-gray-800">
-												${item.price} & FREE Returns
-											</p>
-											<div className="flex space-x-4 mt-2">
-												<span>Qty: {item.amount}</span>
-												<button className="text-blue-600 hover:underline">
-													Add gift options
-												</button>
+					{paymentSuccess ? ( // Conditionally render success message
+						<div className="flex items-center justify-center text-green-600">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								className="h-8 w-8 mr-2"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth={2}
+									d="M5 13l4 4L19 7"
+								/>
+							</svg>
+							<span className="text-xl font-semibold">
+								Order placed successfully!
+							</span>
+						</div>
+					) : (
+						<div className="flex flex-col lg:flex-row gap-6 mb-6">
+							<div className="flex-1 bg-gray-50 p-6 border rounded-lg shadow-md">
+								<h3 className="text-xl font-semibold mb-4">
+									Review items and shipping
+								</h3>
+								<div className="bg-gray-100 p-4 rounded-lg">
+									<p className="text-sm text-green-700 mb-4">
+										Arriving Jul 29, 2024 if you order in the next 17 hours and
+										30 minutes (Details)
+									</p>
+									{cart.map((item) => (
+										<div key={item.id} className="flex mb-4">
+											<img
+												src={item.image}
+												alt={item.title}
+												className="w-20 h-20 object-cover rounded-lg"
+											/>
+											<div className="ml-4">
+												<p className="font-semibold text-lg">{item.title}</p>
+												<p className="text-gray-600">Sold by: {item.seller}</p>
+												<p className="font-semibold text-gray-800">
+													${item.price} & FREE Returns
+												</p>
+												<div className="flex space-x-4 mt-2">
+													<span>Qty: {item.amount}</span>
+													<button className="text-blue-600 hover:underline">
+														Add gift options
+													</button>
+												</div>
 											</div>
 										</div>
+									))}
+								</div>
+							</div>
+							<div className="flex-1 flex flex-col gap-6">
+								<div className="bg-gray-50 p-6 border rounded-lg shadow-md">
+									<h4 className="text-lg font-semibold mb-4">Order Summary</h4>
+									<div className="flex justify-between mb-2">
+										<span>Items ({totalItems}):</span>
+										<span>${subtotalPrice}</span>
 									</div>
-								))}
-							</div>
-						</div>
-						<div className="flex-1 flex flex-col gap-6">
-							<div className="bg-gray-50 p-6 border rounded-lg shadow-md">
-								<h4 className="text-lg font-semibold mb-4">Order Summary</h4>
-								<div className="flex justify-between mb-2">
-									<span>Items ({totalItems}):</span>
-									<span>${subtotalPrice}</span>
+									<div className="flex justify-between mb-2">
+										<span>Shipping & handling:</span>
+										<span>${deliveryFee.toFixed(2)}</span>
+									</div>
+									<div className="flex justify-between mb-2">
+										<span>Total before tax:</span>
+										<span>${subtotalPrice}</span>
+									</div>
+									<div className="flex justify-between mb-2">
+										<span>Estimated tax to be collected:</span>
+										<span>${taxAmount}</span>
+									</div>
+									<div className="flex justify-between font-semibold text-lg mb-4">
+										<span>Order total:</span>
+										<span>${totalPrice}</span>
+									</div>
 								</div>
-								<div className="flex justify-between mb-2">
-									<span>Shipping & handling:</span>
-									<span>${deliveryFee.toFixed(2)}</span>
-								</div>
-								<div className="flex justify-between mb-2">
-									<span>Total before tax:</span>
-									<span>${subtotalPrice}</span>
-								</div>
-								<div className="flex justify-between mb-2">
-									<span>Estimated tax to be collected:</span>
-									<span>${taxAmount}</span>
-								</div>
-								<div className="flex justify-between font-semibold text-lg mb-4">
-									<span>Order total:</span>
-									<span>${totalPrice}</span>
-								</div>
-							</div>
-							<div
-								className="bg-gray-50 p-6 border rounded-lg shadow-md flex flex-col"
-								style={{ minHeight: "300px" }}
-							>
-								<h3 className="text-xl font-semibold mb-4">Payment Method</h3>
-								<form
-									onSubmit={handlePayment}
-									className="flex flex-col flex-grow"
+								<div
+									className="bg-gray-50 p-6 border rounded-lg shadow-md flex flex-col"
+									style={{ minHeight: "300px" }}
 								>
-									{cardError && (
-										<small className="text-red-600 mb-4">{cardError}</small>
-									)}
-									<CardElement
-										onChange={handleChange}
-										className="p-4 border rounded-lg flex-grow mb-4"
-										options={{
-											style: {
-												base: {
-													fontSize: "16px",
-													color: "#424770",
-													"::placeholder": {
-														color: "#aab7c4",
+									<h3 className="text-xl font-semibold mb-4">Payment Method</h3>
+									<form
+										onSubmit={handlePayment}
+										className="flex flex-col flex-grow"
+									>
+										{cardError && (
+											<small className="text-red-600 mb-4">{cardError}</small>
+										)}
+										<CardElement
+											onChange={handleChange}
+											className="p-4 border rounded-lg flex-grow mb-4"
+											options={{
+												style: {
+													base: {
+														fontSize: "16px",
+														color: "#424770",
+														"::placeholder": {
+															color: "#aab7c4",
+														},
+													},
+													invalid: {
+														color: "#9e2146",
 													},
 												},
-												invalid: {
-													color: "#9e2146",
-												},
-											},
-										}}
-									/>
-									<div className="mt-auto">
-										<button
-											className="bg-yellow-500 text-white w-full py-2 rounded-lg transition duration-300 ease-in-out hover:bg-yellow-600"
-											type="submit"
-											disabled={!stripe || !elements || processing}
-										>
-											{processing ? (
-												<div className="flex items-center justify-center">
-													<CircleLoader color="#ffffff" size={20} />
-													<p className="ml-2">Processing...</p>
-												</div>
-											) : (
-												"Place your order"
-											)}
-										</button>
-									</div>
-								</form>
+											}}
+										/>
+										<div className="mt-auto">
+											<button
+												className="bg-yellow-500 text-white w-full py-2 rounded-lg transition duration-300 ease-in-out hover:bg-yellow-600"
+												type="submit"
+												disabled={!stripe || !elements || processing}
+											>
+												{processing ? (
+													<div className="flex items-center justify-center">
+														<CircleLoader color="#ffffff" size={20} />
+														<p className="ml-2">Processing...</p>
+													</div>
+												) : (
+													"Place your order"
+												)}
+											</button>
+										</div>
+									</form>
+								</div>
 							</div>
 						</div>
-					</div>
+					)}
 				</div>
 			</div>
 		</LayOut>

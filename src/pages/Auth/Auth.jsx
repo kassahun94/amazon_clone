@@ -6,39 +6,34 @@ import {
 	createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { DataContext } from "../../components/DataProvider/DataProvider";
-import {CircleLoader} from "react-spinners";
+import { CircleLoader } from "react-spinners";
 
 function Auth() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
-  const [loading, setLoading] = useState({
-    signIn: false,
-    signUp: false,
-  });
+	const [loading, setLoading] = useState({
+		signIn: false,
+		signUp: false,
+	});
 
 	const [, dispatch] = useContext(DataContext);
-	const navigate = useNavigate();	
+	const navigate = useNavigate();
 	const navStateData = useLocation();
 
 	const AuthHandler = (e) => {
 		e.preventDefault();
-            // sign in section
 		if (e.target.name === "signin") {
-      setLoading({...loading, signIn: true });
+			setLoading({ ...loading, signIn: true });
 			signInWithEmailAndPassword(auth, email, password)
 				.then((userCredential) => {
 					console.log(userCredential.user);
 					dispatch({
 						type: "SET_USER",
 						user: userCredential.user,
-					});   
-          setLoading({...loading, signIn: false });
-
-					// navigate to home page or riderct to the page that user was trying to access
-
-
-					navigate(navStateData?.redirect || "/");
+					});
+					setLoading({ ...loading, signIn: false });
+					navigate(navStateData?.state?.redirect || "/");
 				})
 				.catch((error) => {
 					if (error.code === "auth/wrong-password") {
@@ -47,20 +42,19 @@ function Auth() {
 						setError("No user found with this email.");
 					} else {
 						setError(error.message);
-            setLoading({...loading, signIn: false });
 					}
+					setLoading({ ...loading, signIn: false });
 				});
-				// create account section
 		} else {
+			setLoading({ ...loading, signUp: true });
 			createUserWithEmailAndPassword(auth, email, password)
 				.then((userCredential) => {
-          setLoading({...loading, signUp: true });
 					dispatch({
 						type: "SET_USER",
 						user: userCredential.user,
 					});
-          setLoading({...loading, signUp: false });
-					navigate(navStateData?.redirect || "/");
+					setLoading({ ...loading, signUp: false });
+					navigate(navStateData?.state?.redirect || "/");
 				})
 				.catch((error) => {
 					if (error.code === "auth/email-already-in-use") {
@@ -71,15 +65,15 @@ function Auth() {
 						setError("Weak password.");
 					} else {
 						setError(error.message);
-            setLoading({...loading, signUp: false });
-						
 					}
+					setLoading({ ...loading, signUp: false });
 				});
 		}
 	};
 
 	return (
-		<section className="bg-gray-100 min-h-screen flex flex-col items-center justify-center">
+		<section className="bg-gray-100 min-h-screen flex flex-col items-center absolute top-0 left-0 right-0 pt-20">
+			{/* Margin from top: 30px (pt-8) */}
 			<div className="mb-8">
 				<Link to="/">
 					<img
@@ -92,13 +86,11 @@ function Auth() {
 			<div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
 				<div>
 					<h1 className="text-3xl font-semibold mb-4">Sign In</h1>
-					{
-						navStateData?.state?.msg && (
-							<small className="mb-4 p-2 align-item-center font-weight-bold text-red-700">
-								{navStateData?.state?.msg}
-							</small>
-						)
-					}
+					{navStateData?.state?.msg && (
+						<small className="mb-4 p-2 font-weight-bold text-red-700">
+							{navStateData?.state?.msg}
+						</small>
+					)}
 					<form>
 						<div className="mb-4">
 							<label
@@ -155,12 +147,11 @@ function Auth() {
 						onClick={AuthHandler}
 						className="mt-4 w-full bg-gray-200 text-black py-2 px-4 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2"
 					>
-            {loading.signUp ?(
-              <CircleLoader color="#5bec16" size={20} />
-            ) : (
-              "Create your Amazon Account"
-            
-            )}
+						{loading.signUp ? (
+							<CircleLoader color="#5bec16" size={20} />
+						) : (
+							"Create your Amazon Account"
+						)}
 					</button>
 				</div>
 			</div>
