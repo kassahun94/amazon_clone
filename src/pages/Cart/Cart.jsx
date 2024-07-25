@@ -1,18 +1,10 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { DataContext } from "../../components/DataProvider/DataProvider";
 import { Link } from "react-router-dom";
 import LayOut from "../../components/layOut/LayOut";
 
 function Cart() {
 	const [{ cart }, dispatch] = useContext(DataContext);
-
-	useEffect(() => {
-		const ids = cart.map((item) => item.id);
-		const hasDuplicates = ids.length !== new Set(ids).size;
-		if (hasDuplicates) {
-			console.warn("Duplicate IDs detected:", ids);
-		}
-	}, [cart]);
 
 	const incrementItem = (id) => {
 		dispatch({ type: "INCREMENT_ITEM", payload: id });
@@ -33,14 +25,13 @@ function Cart() {
 	const totalItems = cart.reduce((acc, item) => acc + item.amount, 0);
 
 	const hasPrimeItem = cart.some((item) => item.prime);
-	const deliveryFee = hasPrimeItem ? 0 : 6.99;
+	const deliveryFee = cart.length > 0 ? (hasPrimeItem ? 0 : 6.99) : 0;
 
 	const totalWithDelivery = (parseFloat(subtotal) + deliveryFee).toFixed(2);
 
 	return (
 		<LayOut>
 			<section className="flex flex-col md:flex-row gap-5 w-full mx-auto max-w-full">
-				{/* Cart Items Display */}
 				<div className="flex-grow p-5 w-full md:max-w-[70%] mx-auto">
 					<h2 className="py-5 text-xl italic font-bold">Hello</h2>
 					<h3 className="py-5 italic underline text-lg">Your Cart</h3>
@@ -50,7 +41,7 @@ function Cart() {
 						) : (
 							cart.map((item) => (
 								<div
-									key={`${item.id}-${item.title}`} // Ensure uniqueness
+									key={item.id}
 									className="flex items-center gap-5 p-5 border-b border-gray-200"
 								>
 									<img
@@ -128,7 +119,6 @@ function Cart() {
 						)}
 					</div>
 				</div>
-				{/* Subtotal and Checkout */}
 				<div className="w-full md:w-auto md:max-w-[30%] md:sticky md:top-5 p-5 border border-gray-300 bg-gray-100 rounded-md">
 					{cart.length > 0 && (
 						<div className="flex flex-col items-center gap-5">
@@ -148,7 +138,6 @@ function Cart() {
 							</div>
 						</div>
 					)}
-					{/* Cart Summary */}
 					<div className="mt-5">
 						<h3 className="py-5 text-lg">Cart Summary</h3>
 						<div className="flex flex-col gap-5 p-5 border border-gray-300 bg-gray-100 rounded-md">
@@ -158,7 +147,7 @@ function Cart() {
 							</div>
 							<div className="flex justify-between">
 								<p>Shipping</p>
-								<p>${deliveryFee === 0 ? "Free" : deliveryFee.toFixed(2)}</p>
+								<p>${deliveryFee === 0 ? "00" : deliveryFee.toFixed(2)}</p>
 							</div>
 							<div className="flex justify-between">
 								<p>Total</p>

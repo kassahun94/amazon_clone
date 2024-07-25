@@ -4,7 +4,9 @@ import LayOut from "../../components/layOut/LayOut";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { axiosInstance } from "../../Api/axios";
 import { CircleLoader } from "react-spinners";
-import { db } from "../../utils/fireBase";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
+
+const db = getFirestore();
 
 function Payment() {
 	const [state] = useContext(DataContext);
@@ -37,6 +39,9 @@ function Payment() {
 		e.preventDefault();
 
 		if (!stripe || !elements) {
+			setCardError(
+				"Stripe.js has not loaded properly. Please try again later."
+			);
 			return;
 		}
 
@@ -59,26 +64,27 @@ function Payment() {
 			);
 
 			if (error) {
-				setCardError(error.message);
+				setCardError(error.message || "An unknown error occurred.");
+			} else if (paymentIntent.status === "succeeded") {
+
+				// userid needs imporovement here
+
+				const user = { uid: "SW1Mu8g5QGckIYn6EO9GebiFveX2" }; 
+
+				await setDoc(doc(db, "users", user.uid, "orders", paymentIntent.id), {
+					cart: cart,
+					amount: paymentIntent.amount,
+					created: paymentIntent.created,
+				});
+
+				setCardError(null); 
 			} else {
-				const user = { uid: "placeholderUserId" };
-
-				await db
-					.collection("users")
-					.doc(user.uid)
-					.collection("orders")
-					.doc(paymentIntent.id)
-					.set({
-						cart: cart,
-						amount: paymentIntent.amount,
-						created: paymentIntent.created,
-					});
-
-				setProcessing(false);
+				setCardError("Payment failed. Please try again.");
 			}
 		} catch (error) {
-			console.log(error);
-			setCardError(error.message);
+			console.error("Payment error:", error);
+			setCardError("An error occurred during payment processing.");
+		} finally {
 			setProcessing(false);
 		}
 	};

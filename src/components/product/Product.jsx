@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
 import ProductCard from "./ProductCard";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import Loader from "../loader/Loader";
 
 function Product() {
 	const [products, setProducts] = useState([]);
 	const [isLoading, setLoading] = useState(false);
-	
+
 	useEffect(() => {
 		setLoading(true);
 		axios
@@ -30,9 +29,7 @@ function Product() {
 				<div className="grid grid-flow-row-dense md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:mt-6">
 					{products.slice(0, 4).map((product) => (
 						<div key={product.id}>
-							<Link to={`/products/${product.id}`}>
-								<ProductCard product={product} renderAdd={true} />
-							</Link>
+							<ProductCard product={product} renderAdd={true} />
 						</div>
 					))}
 
@@ -48,17 +45,13 @@ function Product() {
 
 					{products.slice(4, 5).map((product) => (
 						<div key={product.id} className="md:col-span-2">
-							<Link to={`/products/${product.id}`}>
-								<ProductCard product={product} renderAdd={true} />
-							</Link>
+							<ProductCard product={product} renderAdd={true} />
 						</div>
 					))}
 
 					{products.slice(5).map((product) => (
 						<div key={product.id}>
-							<Link to={`/products/${product.id}`}>
-								<ProductCard product={product} renderAdd={true} />
-							</Link>
+							<ProductCard product={product} renderAdd={true} />
 						</div>
 					))}
 				</div>
