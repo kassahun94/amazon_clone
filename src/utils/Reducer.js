@@ -35,6 +35,11 @@ const reducer = (state = initialState, action) => {
 				...state,
 				cart: state.cart.filter((item) => item.id !== action.payload),
 			};
+		case Type.CLEAR_CART:
+			return {
+				...state,
+				cart: [], 
+			};
 		case Type.SET_USER:
 			return {
 				...state,

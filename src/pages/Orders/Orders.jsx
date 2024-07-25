@@ -35,7 +35,7 @@ function Orders() {
 				<div className="flex justify-center items-center gap-4 mb-4">
 					<h2 className="text-2xl border-b-2 border-yellow-500 pb-4">
 						Your Orders
-					</h2>
+					</h2>{orders?.length === 0 && <div className="text-lg">No orders yet</div>}
 				</div>
 				<div className="max-w-4xl mx-auto">
 					{orders?.map((eachOrder, i) => {
@@ -43,7 +43,7 @@ function Orders() {
 							?.reduce((total, item) => total + item.price, 0)
 							.toFixed(2);
 
-						// Convert Firestore Timestamp to Date
+						// Convert Firestore to Date converetr
 						const orderDate = eachOrder?.data?.created?.toDate
 							? eachOrder?.data?.created.toDate()
 							: new Date(eachOrder?.data?.created * 1000);

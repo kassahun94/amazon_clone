@@ -1,16 +1,15 @@
-
-import { createContext, useReducer } from "react";
+import { createContext, useReducer, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Type } from "../../utils/ActionType";
 
 const initialState = {
 	cart: [],
+	user: null,
 };
 
 function reducer(state, action) {
 	switch (action.type) {
 		case Type.ADD_TO_CART: {
-			
 			if (!action.item || !action.item.id) {
 				console.error("Invalid payload for ADD_TO_CART:", action.item);
 				return state;
@@ -54,6 +53,11 @@ function reducer(state, action) {
 				...state,
 				cart: state.cart.filter((item) => item.id !== action.payload),
 			};
+		case Type.CLEAR_CART:
+			return {
+				...state,
+				cart: [], // Clear the cart
+			};
 		case Type.SET_USER:
 			return {
 				...state,
@@ -68,6 +72,10 @@ export const DataContext = createContext();
 
 export function DataProvider({ children }) {
 	const [state, dispatch] = useReducer(reducer, initialState);
+
+	useEffect(() => {
+		console.log("Current state:", state);
+	}, [state]);
 
 	return (
 		<DataContext.Provider value={[state, dispatch]}>

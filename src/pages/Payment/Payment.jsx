@@ -5,11 +5,12 @@ import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { axiosInstance } from "../../Api/axios";
 import { CircleLoader } from "react-spinners";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { Type } from "../../utils/ActionType";
 
 const db = getFirestore();
 
 function Payment() {
-	const [state] = useContext(DataContext);
+	const [state, dispatch] = useContext(DataContext);
 	const cart = state.cart;
 	const [cardError, setCardError] = useState(null);
 	const [processing, setProcessing] = useState(false);
@@ -66,10 +67,10 @@ function Payment() {
 			if (error) {
 				setCardError(error.message || "An unknown error occurred.");
 			} else if (paymentIntent.status === "succeeded") {
+				console.log("Payment succeeded, clearing cart...");
 
-				// userid needs imporovement here
-
-				const user = { uid: "SW1Mu8g5QGckIYn6EO9GebiFveX2" }; 
+				// Save order to Firestore
+				const user = { uid: "SW1Mu8g5QGckIYn6EO9GebiFveX2" };
 
 				await setDoc(doc(db, "users", user.uid, "orders", paymentIntent.id), {
 					cart: cart,
@@ -77,7 +78,16 @@ function Payment() {
 					created: paymentIntent.created,
 				});
 
-				setCardError(null); 
+				// Log cart before dispatch
+				console.log("Cart before dispatch:", state.cart);
+
+				// Dispatch action to clear the cart after successful payment
+				dispatch({ type: Type.CLEAR_CART });
+
+				
+				console.log("Cart after dispatch:", state.cart);
+
+				setCardError(null);
 			} else {
 				setCardError("Payment failed. Please try again.");
 			}
