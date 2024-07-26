@@ -12,6 +12,7 @@ const db = getFirestore();
 function Payment() {
 	const [state, dispatch] = useContext(DataContext);
 	const cart = state.cart;
+	const user = state.user; 
 	const [cardError, setCardError] = useState(null);
 	const [processing, setProcessing] = useState(false);
 	const [paymentSuccess, setPaymentSuccess] = useState(false);
@@ -70,14 +71,22 @@ function Payment() {
 			} else if (paymentIntent.status === "succeeded") {
 				console.log("Payment succeeded, clearing cart...");
 
-				// Save order to Firestore
-				const user = { uid: "SW1Mu8g5QGckIYn6EO9GebiFveX2" };
+				if (!user || !user.uid) {
+					setCardError("User not authenticated. Please log in.");
+					return;
+				}
 
-				await setDoc(doc(db, "users", user.uid, "orders", paymentIntent.id), {
+				// Save order to Firestore
+
+
+				await setDoc(doc(db, "users", user.uid, "orders", paymentIntent.id),
+				
+				{
 					cart: cart,
 					amount: paymentIntent.amount,
 					created: paymentIntent.created,
 				});
+
 
 				// Dispatch action to clear the cart after successful payment
 				dispatch({ type: Type.CLEAR_CART });
@@ -103,7 +112,7 @@ function Payment() {
 					<h2 className="text-2xl font-semibold mb-6">
 						Checkout ({totalItems} items)
 					</h2>
-					{paymentSuccess ? ( // Conditionally render success message
+					{paymentSuccess ? (
 						<div className="flex items-center justify-center text-green-600">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -166,19 +175,15 @@ function Payment() {
 										<span>${subtotalPrice}</span>
 									</div>
 									<div className="flex justify-between mb-2">
-										<span>Shipping & handling:</span>
+										<span>Shipping & Handling:</span>
 										<span>${deliveryFee.toFixed(2)}</span>
 									</div>
 									<div className="flex justify-between mb-2">
-										<span>Total before tax:</span>
-										<span>${subtotalPrice}</span>
-									</div>
-									<div className="flex justify-between mb-2">
-										<span>Estimated tax to be collected:</span>
+										<span>Estimated Tax:</span>
 										<span>${taxAmount}</span>
 									</div>
-									<div className="flex justify-between font-semibold text-lg mb-4">
-										<span>Order total:</span>
+									<div className="flex justify-between font-semibold text-lg mb-4 border-t pt-2">
+										<span>Total:</span>
 										<span>${totalPrice}</span>
 									</div>
 								</div>
@@ -214,7 +219,7 @@ function Payment() {
 										/>
 										<div className="mt-auto">
 											<button
-												className="bg-yellow-500 text-white w-full py-2 rounded-lg transition duration-300 ease-in-out hover:bg-yellow-600"
+												className="bg-blue-500 text-white w-full py-2 rounded-lg transition duration-300 ease-in-out hover:bg-blue-600"
 												type="submit"
 												disabled={!stripe || !elements || processing}
 											>

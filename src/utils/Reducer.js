@@ -1,17 +1,35 @@
-import { Type } from "../utils/ActionType";
+import { createContext, useReducer, useEffect } from "react";
+import PropTypes from "prop-types";
+import { Type } from "../../utils/ActionType";
 
 const initialState = {
 	cart: [],
 	user: null,
 };
 
-const reducer = (state = initialState, action) => {
+function reducer(state, action) {
 	switch (action.type) {
-		case Type.ADD_TO_CART:
+		case Type.ADD_TO_CART: {
+			if (!action.item || !action.item.id) {
+				console.error("Invalid payload for ADD_TO_CART:", action.item);
+				return state;
+			}
+			const itemExists = state.cart.find((item) => item.id === action.item.id);
+			if (itemExists) {
+				return {
+					...state,
+					cart: state.cart.map((item) =>
+						item.id === action.item.id
+							? { ...item, amount: item.amount + 1 }
+							: item
+					),
+				};
+			}
 			return {
 				...state,
 				cart: [...state.cart, { ...action.item, amount: 1 }],
 			};
+		}
 		case Type.INCREMENT_ITEM:
 			return {
 				...state,
@@ -38,7 +56,7 @@ const reducer = (state = initialState, action) => {
 		case Type.CLEAR_CART:
 			return {
 				...state,
-				cart: [], 
+				cart: [], // Clear the cart
 			};
 		case Type.SET_USER:
 			return {
@@ -48,6 +66,24 @@ const reducer = (state = initialState, action) => {
 		default:
 			return state;
 	}
-};
+}
 
-export default reducer;
+export const DataContext = createContext();
+
+export function DataProvider({ children }) {
+	const [state, dispatch] = useReducer(reducer, initialState);
+
+	useEffect(() => {
+		console.log("Current state:", state);
+	}, [state]);
+
+	return (
+		<DataContext.Provider value={[state, dispatch]}>
+			{children}
+		</DataContext.Provider>
+	);
+}
+
+DataProvider.propTypes = {
+	children: PropTypes.node.isRequired,
+};
