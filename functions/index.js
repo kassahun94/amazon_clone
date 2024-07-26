@@ -4,7 +4,6 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const Stripe = require("stripe");
-const { setGlobalOptions } = require("firebase-functions/v2");
 
 dotenv.config();
 
@@ -18,16 +17,25 @@ const app = express();
 app.use(cors({ origin: true }));
 app.use(express.json());
 
-setGlobalOptions({maxInstances: 1});
+// Rate limiting variables
+let currentInstances = 0;
+const MAX_INSTANCES = 10;
 
 app.get("/", (_, res) => {
 	res.status(200).json({ message: "success!!!" });
 });
 
 app.post("/payments/create", async (req, res) => {
+	if (currentInstances >= MAX_INSTANCES) {
+		return res.status(429).json({ message: "Too Many Requests" });
+	}
+
+	currentInstances++;
+
 	const { total } = req.body;
 
 	if (typeof total !== "number" || isNaN(total) || total <= 0) {
+		currentInstances--;
 		return res.status(400).json({
 			message: "Total must be a valid number greater than 0",
 		});
@@ -35,7 +43,7 @@ app.post("/payments/create", async (req, res) => {
 
 	try {
 		const paymentIntent = await stripeInstance.paymentIntents.create({
-			amount: Math.round(total * 100), // Convert dollars to cents
+			amount: Math.round(total * 100),
 			currency: "usd",
 		});
 		res.status(201).json({
@@ -46,6 +54,8 @@ app.post("/payments/create", async (req, res) => {
 		res.status(500).json({
 			message: "Internal Server Error",
 		});
+	} finally {
+		currentInstances--;
 	}
 });
 
