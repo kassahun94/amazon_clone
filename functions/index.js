@@ -4,6 +4,7 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const Stripe = require("stripe");
+const { setGlobalOptions } = require("firebase-functions/v2");
 
 dotenv.config();
 
@@ -16,6 +17,8 @@ admin.initializeApp();
 const app = express();
 app.use(cors({ origin: true }));
 app.use(express.json());
+
+setGlobalOptions({maxInstances: 1});
 
 app.get("/", (_, res) => {
 	res.status(200).json({ message: "success!!!" });
